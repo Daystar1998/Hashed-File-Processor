@@ -1,8 +1,8 @@
 PIN    KEY     # OF ACCESSES
 
-O2B    *****       1
-Z5V    *****       1
+O2B    rlgj#       1
+Z5V    yee@w       1
 A6T    *****       1
-IXS    *****       1
-ZGW    *****       3
-7DS    *****       1
+IXS    wsh@^       2
+ZGW    ^gkbi       3
+7DS    *****       2

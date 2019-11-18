@@ -78,11 +78,11 @@ KeyAndAccesses findKey(ifstream &hashIn, string &pin) {
 
 	int headerLength = sizeof(int) * 3;
 
-	int pinHash = 0;
+	int pinHash = 1;
 
 	for (int i = 0; i < PIN_SIZE; i++) {
 
-		pinHash += pin[i];
+		pinHash *= pin[i];
 	}
 
 	pinHash %= recordCount;
@@ -97,9 +97,15 @@ KeyAndAccesses findKey(ifstream &hashIn, string &pin) {
 
 		result.accessCount++;;
 
-		if (record.pin == pin) {
+		string currentPin = record.pin;
+		currentPin = currentPin.substr(0, PIN_SIZE);
 
-			result.key = record.key;
+		if (currentPin == pin) {
+
+			string currentKey = record.key;
+			currentKey = currentKey.substr(0, KEY_SIZE);
+
+			result.key = currentKey;
 			break;
 		} else if (record.pin[0] == NOT_FOUND_CHAR || record.top == NULL_TOP) {
 

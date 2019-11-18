@@ -14,8 +14,13 @@
 ******************************************************************************/
 
 #include <fstream>
+#include <string>
 
 using namespace std;
+
+const string PINS_AND_KEYS_FILE = "pinsAndKeys.dat";
+const string PINS_FILE = "pins.txt";
+const string OUTPUT_FILE = "hashReport.txt";
 
 const int PIN_SIZE = 3;
 const int KEY_SIZE = 5;
@@ -29,5 +34,13 @@ struct HashRecord {
 
 int main() {
 
+	fstream hashIn(PINS_AND_KEYS_FILE, ios::in, ios::binary);
 
+	int recordSize = 0;
+	int recordCount = 0;
+	int nextAvailableOverflowRecord = 0;
+
+	hashIn.read((char *)recordSize, sizeof(int));
+	hashIn.read((char *)recordCount, sizeof(int));
+	hashIn.read((char *)nextAvailableOverflowRecord, sizeof(int));
 }

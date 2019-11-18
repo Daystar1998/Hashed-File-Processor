@@ -15,6 +15,7 @@
 
 #include <fstream>
 #include <iomanip>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -140,14 +141,20 @@ void outputHashReport(vector<KeyAndAccesses> &outputData) {
 
 	ofstream fout(OUTPUT_FILE, ios::out);
 
-	fout << left <<setw(pinOutputWidth) << "PIN" << setw(keyOutputWidth) << "KEY" << "# OF ACCESSES" << endl << endl;
+	if (fout.is_open()) {
 
-	for (int i = 0; i < outputData.size(); i++) {
+		fout << left << setw(pinOutputWidth) << "PIN" << setw(keyOutputWidth) << "KEY" << "# OF ACCESSES" << endl << endl;
 
-		fout << left << setw(pinOutputWidth) << outputData[i].pin;
-		fout << setw(keyOutputWidth) << outputData[i].key;
-		fout << right << setw(accessOutputWidth) << outputData[i].accessCount;
-		fout << endl;
+		for (int i = 0; i < outputData.size(); i++) {
+
+			fout << left << setw(pinOutputWidth) << outputData[i].pin;
+			fout << setw(keyOutputWidth) << outputData[i].key;
+			fout << right << setw(accessOutputWidth) << outputData[i].accessCount;
+			fout << endl;
+		}
+	} else {
+
+		cerr << "Unable to open file: " << OUTPUT_FILE << endl;
 	}
 
 	fout.close();
@@ -157,23 +164,36 @@ int main() {
 
 	ifstream hashIn(PINS_AND_KEYS_FILE, ios::in | ios::binary);
 
-	hashIn.read((char *)&recordSize, sizeof(int));
-	hashIn.read((char *)&recordCount, sizeof(int));
-	hashIn.read((char *)&nextAvailableOverflowRecord, sizeof(int));
+	if (hashIn.is_open()) {
 
-	ifstream pinIn(PINS_FILE, ios::in);
+		hashIn.read((char *)&recordSize, sizeof(int));
+		hashIn.read((char *)&recordCount, sizeof(int));
+		hashIn.read((char *)&nextAvailableOverflowRecord, sizeof(int));
 
-	vector<KeyAndAccesses> outputData;
+		ifstream pinIn(PINS_FILE, ios::in);
 
-	string pin;
+		if (pinIn.is_open()) {
 
-	while (getline(pinIn, pin)) {
+			vector<KeyAndAccesses> outputData;
 
-		outputData.push_back(findKey(hashIn, pin));
+			string pin;
+
+			while (getline(pinIn, pin)) {
+
+				outputData.push_back(findKey(hashIn, pin));
+			}
+
+			outputHashReport(outputData);
+		} else {
+
+			cerr << "Unable to open file: " << PINS_FILE << endl;
+		}
+
+		pinIn.close();
+	} else {
+
+		cerr << "Unable to open file: " << PINS_AND_KEYS_FILE << endl;
 	}
 
 	hashIn.close();
-	pinIn.close();
-
-	outputHashReport(outputData);
 }

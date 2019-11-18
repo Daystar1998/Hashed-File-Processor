@@ -141,7 +141,9 @@ void outputHashReport(vector<KeyAndAccesses> &outputData) {
 
 	ofstream fout(OUTPUT_FILE, ios::out);
 
-	if (fout.is_open()) {
+	if (fout.is_open() && !outputData.empty()) {
+
+		double averageAccessCount = 0;
 
 		fout << left << setw(pinOutputWidth) << "PIN" << setw(keyOutputWidth) << "KEY" << "# OF ACCESSES" << endl << endl;
 
@@ -151,7 +153,15 @@ void outputHashReport(vector<KeyAndAccesses> &outputData) {
 			fout << setw(keyOutputWidth) << outputData[i].key;
 			fout << right << setw(accessOutputWidth) << outputData[i].accessCount;
 			fout << endl;
+
+			averageAccessCount += outputData[i].accessCount;
 		}
+
+		averageAccessCount /= outputData.size();
+
+		fout << endl;
+
+		fout << "Average access to locate a pin or determine pin does not exist: " << fixed << setprecision(2) << averageAccessCount << endl;
 	} else {
 
 		cerr << "Unable to open file: " << OUTPUT_FILE << endl;

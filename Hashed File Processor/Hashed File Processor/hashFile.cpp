@@ -14,6 +14,7 @@
 ******************************************************************************/
 
 #include <fstream>
+#include <iomanip>
 #include <string>
 #include <vector>
 
@@ -66,10 +67,11 @@ KeyAndAccesses findKey(ifstream &hashIn, string &pin) {
 	KeyAndAccesses result;
 
 	result.pin = pin;
+	result.key = "";
 
 	for (int i = 0; i < KEY_SIZE; i++) {
 
-		result.key[i] = NOT_FOUND_CHAR;
+		result.key += NOT_FOUND_CHAR;
 	}
 
 	result.accessCount = 0;
@@ -113,11 +115,59 @@ KeyAndAccesses findKey(ifstream &hashIn, string &pin) {
 	return result;
 }
 
+/******************************************************************************
+		Name: outputHashReport
+
+		Des:
+			Outputs the pin, key, and number of accesses. Also, outputs
+			average accesses count.
+
+		Params:
+			outputData - type vector<KeyAndAccesses> &, the data to be output
+
+******************************************************************************/
+void outputHashReport(vector<KeyAndAccesses> &outputData) {
+
+	const int pinOutputWidth = 7;
+	const int keyOutputWidth = 8;
+	const int accessOutputWidth = 5;
+
+	ofstream fout(OUTPUT_FILE, ios::out);
+
+	fout << left <<setw(pinOutputWidth) << "PIN" << setw(keyOutputWidth) << "KEY" << "# OF ACCESSES" << endl << endl;
+
+	for (int i = 0; i < outputData.size(); i++) {
+
+		fout << left << setw(pinOutputWidth) << outputData[i].pin;
+		fout << setw(keyOutputWidth) << outputData[i].key;
+		fout << right << setw(accessOutputWidth) << outputData[i].accessCount;
+		fout << endl;
+	}
+
+	fout.close();
+}
+
 int main() {
 
 	ifstream hashIn(PINS_AND_KEYS_FILE, ios::in | ios::binary);
 
-	hashIn.read((char *)recordSize, sizeof(int));
-	hashIn.read((char *)recordCount, sizeof(int));
-	hashIn.read((char *)nextAvailableOverflowRecord, sizeof(int));
+	hashIn.read((char *)&recordSize, sizeof(int));
+	hashIn.read((char *)&recordCount, sizeof(int));
+	hashIn.read((char *)&nextAvailableOverflowRecord, sizeof(int));
+
+	ifstream pinIn(PINS_FILE, ios::in);
+
+	vector<KeyAndAccesses> outputData;
+
+	string pin;
+
+	while (getline(pinIn, pin)) {
+
+		outputData.push_back(findKey(hashIn, pin));
+	}
+
+	hashIn.close();
+	pinIn.close();
+
+	outputHashReport(outputData);
 }

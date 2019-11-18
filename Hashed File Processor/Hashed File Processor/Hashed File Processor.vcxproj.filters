@@ -24,5 +24,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="pins.txt" />
+    <Text Include="hashReport.txt" />
   </ItemGroup>
 </Project>

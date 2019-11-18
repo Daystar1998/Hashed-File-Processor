@@ -129,6 +129,7 @@
     <None Include="pinsAndKeys.dat" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="hashReport.txt" />
     <Text Include="pins.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

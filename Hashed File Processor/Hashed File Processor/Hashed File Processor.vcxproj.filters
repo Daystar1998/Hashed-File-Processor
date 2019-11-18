@@ -19,4 +19,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="pinsAndKeys.dat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="pins.txt" />
+  </ItemGroup>
 </Project>
